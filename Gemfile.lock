@@ -1,0 +1,24 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-eventstream (1.0.1)
+    aws-partitions (1.107.0)
+    aws-sdk-core (3.36.0)
+      aws-eventstream (~> 1.0)
+      aws-partitions (~> 1.0)
+      aws-sigv4 (~> 1.0)
+      jmespath (~> 1.0)
+    aws-sdk-dynamodb (1.15.0)
+      aws-sdk-core (~> 3, >= 3.26.0)
+      aws-sigv4 (~> 1.0)
+    aws-sigv4 (1.0.3)
+    jmespath (1.4.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aws-sdk-dynamodb
+
+BUNDLED WITH
+   1.16.1

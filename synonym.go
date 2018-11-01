@@ -9,16 +9,16 @@ import (
 )
 
 type Event struct {
-  Name string `json:"name"`
+  tag string `json:"name"`
 }
 
 type Response struct {
-  Result string `json:"Name:"`
+  Result string `json:"tag:"`
 }
 
 
 type Test struct {
-  Name string `dynamo:"Name"`
+  tag string `dynamo:"tag"`
 }
 
 func synonym(event Event) (Response, error) {
@@ -39,13 +39,13 @@ func synonym(event Event) (Response, error) {
   table := db.Table("test")
 
   var result Test
-  err = table.Get("Name", "testtest").One(&result)
+  err = table.Get("tag", "testtest").One(&result)
 
-  println(result.Name)
+  println(result.tag)
 
-  return Response{Result: result.Name}, err
+  return Response{Result: result.tag}, err
 }
 func main(){
-  //synonym(Event{Name: "aa"})
+  //synonym(Event{tag: "aa"})
   lambda.Start(synonym)
 }
