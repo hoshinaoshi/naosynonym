@@ -1,0 +1,19 @@
+{
+  "name": "naosynonym",
+  "version": "1.0.0",
+  "description": "",
+  "main": "synonym.go",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoshinaoshi/naosynonym.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoshinaoshi/naosynonym/issues"
+  },
+  "homepage": "https://github.com/hoshinaoshi/naosynonym#readme"
+}
