@@ -18,5 +18,8 @@
   "homepage": "https://github.com/hoshinaoshi/naosynonym#readme",
   "dependencies": {
     "serverless": "^1.32.0"
+  },
+  "devDependencies": {
+    "serverless-localstack": "^0.3.1"
   }
 }
