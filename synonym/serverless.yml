@@ -12,32 +12,11 @@
 # Happy Coding!
 
 service: synonym # NOTE: update this with your service name
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
-
 provider:
   name: aws
   runtime: go1.x
-
-# you can overwrite defaults here
   stage: dev
-  region: us-east-1
-
-custom:
-  localstack:
-    host: http://localhost
-    endpoints:
-      S3: http://localhost:4572
-      DynamoDB: http://localhost:4570
-      CloudFormation: http://localhost:4581
-      Elasticsearch: http://localhost:4571
-      ES: http://localhost:4578
-      SNS: http://localhost:4575
-      SQS: http://localhost:4576
-      Lambda: http://localhost:4574
-      Kinesis: http://localhost:4568
+  region: us-west-2
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -65,7 +44,7 @@ package:
    - ./bin/**
 
 functions:
-  hello:
+  synonym:
     handler: bin/main
 
 #    The following are a few example events you can configure
