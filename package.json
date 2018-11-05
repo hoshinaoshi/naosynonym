@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/hoshinaoshi/naosynonym/issues"
   },
-  "homepage": "https://github.com/hoshinaoshi/naosynonym#readme"
+  "homepage": "https://github.com/hoshinaoshi/naosynonym#readme",
+  "dependencies": {
+    "serverless": "^1.32.0"
+  }
 }

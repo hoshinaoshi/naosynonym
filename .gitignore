@@ -3,3 +3,4 @@
 synonym
 dictionary_of_synonym.tsv
 vendor/*
+node_modules
