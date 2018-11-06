@@ -36,7 +36,7 @@ func synonym(event Event) (Response, error) {
   }
 
   db := dynamo.New(sess)
-  table := db.Table("test")
+  table := db.Table("dev-synonyms")
 
   var result Test
   err = table.Get("tag", "testtest").One(&result)

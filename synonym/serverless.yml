@@ -17,6 +17,15 @@ provider:
   runtime: go1.x
   stage: dev
   region: us-west-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+        - "lambda:InvokeFunction"
+      Resource:
+        - "arn:aws:dynamodb:us-west-2:163792334106:table/${self:provider.stage}-synonyms"
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -91,3 +100,20 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+resources:
+  Resources:
+    SynonymssTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${self:provider.stage}-synonyms"
+        AttributeDefinitions:
+          - 
+            AttributeName: tag
+            AttributeType: S
+        KeySchema:
+          - 
+            AttributeName: tag
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
