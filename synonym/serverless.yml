@@ -55,7 +55,29 @@ package:
 functions:
   synonym:
     handler: bin/main
-
+    events:
+      - http:
+          path: synonyms
+          method: get
+          #authorizer: auth
+     #- http:
+        #path: upload
+        #method: options
+    memorySize: 128
+    response:
+      headers:
+        Content-Type: "'application/json'"
+      template: $input.path('$')
+    cors:
+      origins:
+        - '*'
+      headers:
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+      allowCredentials: false
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
