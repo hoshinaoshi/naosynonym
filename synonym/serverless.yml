@@ -22,6 +22,7 @@ provider:
     - Effect: "Allow"
       Action:
         - dynamodb:GetRecords
+        - dynamodb:GetItem
         - dynamodb:GetShardIterator
         - dynamodb:ListStreams
         - "lambda:InvokeFunction"

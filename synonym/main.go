@@ -49,5 +49,5 @@ func synonym(event Event) (Response, error) {
 }
 func main(){
   //synonym(Event{tag: "aa"})
-  lambda.Start(synonym)
+  lambda.Start(synonym(Event{tag: "aa"}))
 }
