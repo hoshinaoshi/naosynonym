@@ -3,7 +3,7 @@ package main
 import (
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/aws/credentials"
+  //"github.com/aws/aws-sdk-go/aws/credentials"
   "github.com/aws/aws-lambda-go/lambda"
   "github.com/guregu/dynamo"
 )
@@ -22,18 +22,20 @@ type Test struct {
 }
 
 func synonym(event Event) (Response, error) {
-  ep := "http://localhost:4569"
-  cred := credentials.NewStaticCredentials("dumy", "dumy", "")
-  region := "us-east-1"
+  //ep := "http://localhost:4569"
+  //cred := credentials.NewStaticCredentials("dumy", "dumy", "")
+  println("pre session")
+  region := "us-west-2"
   conf := &aws.Config{
-    Credentials: cred,
+    //Credentials: cred,
     Region:      &region,
-    Endpoint:    &ep,
+    //Endpoint:    &ep,
   }
   sess, err := session.NewSession(conf)
   if err != nil {
     panic(err)
   }
+  println("post session")
 
   db := dynamo.New(sess)
   table := db.Table("dev-synonyms")
