@@ -62,6 +62,9 @@ functions:
           path: synonyms
           method: get
           integration: lambda
+          request:
+            template:
+              application/json: $input.params
           response:
             headers:
               Content-Type: "'application/json'"
