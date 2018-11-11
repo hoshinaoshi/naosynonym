@@ -19,10 +19,11 @@ type Response struct {
   Synonyms string `json:"synonyms:"`
 }
 
-func synonym(c context.Context, request events.APIGatewayProxyRequest) (Response, error){
+func synonym(c context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   //log.Printf("Processing Lambda request %s\n", request.RequestContext.RequestID)
   log.Printf("Processing Lambda request %s\n", request.QueryStringParameters["tag"])
   log.Printf("Processing Lambda request %s\n", request.QueryStringParameters)
+  log.Printf("Processing Lambda request %s\n", request)
   //tag := request.QueryStringParameters["tag"]
   //fmt.Println(tag)dd
 
@@ -54,7 +55,14 @@ func synonym(c context.Context, request events.APIGatewayProxyRequest) (Response
     //resp.Item[項目名].型 でデータへのポインタを取得
     fmt.Println(*resp.Item["tag"].S)
 
-    return Response{Synonyms: *resp.Item["tag"].S}, err
+    return events.APIGatewayProxyResponse{
+      Headers: map[string]string{
+        "Content-Type": "application/json",
+      },
+      StatusCode: 200,
+      Body: *resp.Item["tag"].S,
+      IsBase64Encoded: false,
+    }, err
 }
 func main(){
   //synonym(Event{name: "aa"})
