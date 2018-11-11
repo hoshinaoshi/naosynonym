@@ -65,7 +65,7 @@ functions:
           response:
             headers:
               Content-Type: "'application/json'"
-            template: $input.path('$')
+            template: $input.body
     memorySize: 128
     cors:
       origins:
