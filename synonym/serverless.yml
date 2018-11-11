@@ -61,15 +61,12 @@ functions:
       - http:
           path: synonyms
           method: get
-          #authorizer: auth
-     #- http:
-        #path: upload
-        #method: options
+          integration: lambda
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$')
     memorySize: 128
-    response:
-      headers:
-        Content-Type: "'application/json'"
-      template: $input.path('$')
     cors:
       origins:
         - '*'
