@@ -4,6 +4,7 @@ import (
   "fmt"
   "log"
   "context"
+  "encoding/json"
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-lambda-go/lambda"
@@ -53,14 +54,18 @@ func synonym(c context.Context, request events.APIGatewayProxyRequest) (events.A
     }
 
     //resp.Item[項目名].型 でデータへのポインタを取得
-    fmt.Println(*resp.Item["tag"].S)
+    response := Response{Synonyms: *resp.Item["tag"].S}
+    responseJson, err := json.Marshal(response)
+    if err != nil {
+      fmt.Println("JSON Marshal error:", err)
+    }
 
     return events.APIGatewayProxyResponse{
       Headers: map[string]string{
         "Content-Type": "application/json",
       },
       StatusCode: 200,
-      Body: *resp.Item["tag"].S,
+      Body: string(responseJson),
       IsBase64Encoded: false,
     }, err
 }
