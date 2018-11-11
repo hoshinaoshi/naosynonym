@@ -1,12 +1,14 @@
 package main
 
 import (
+  "fmt"
+  "log"
   "context"
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-lambda-go/lambda"
+  "github.com/aws/aws-lambda-go/events"
   "github.com/aws/aws-sdk-go/service/dynamodb"
-  "fmt"
 )
 
 type Request struct {
@@ -17,7 +19,12 @@ type Response struct {
   Synonyms string `json:"synonyms:"`
 }
 
-func synonym(ctx context.Context, req Request) (Response, error){
+func synonym(c context.Context, request events.APIGatewayProxyRequest) (Response, error){
+  //log.Printf("Processing Lambda request %s\n", request.RequestContext.RequestID)
+  log.Printf("Processing Lambda request %s\n", request.QueryStringParameters["tag"])
+  log.Printf("Processing Lambda request %s\n", request.QueryStringParameters)
+  //tag := request.QueryStringParameters["tag"]
+  //fmt.Println(tag)dd
 
   ddb := dynamodb.New(session.New())
 
