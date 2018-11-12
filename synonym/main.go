@@ -7,6 +7,7 @@ import (
   "encoding/json"
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
+  "github.com/aws/aws-sdk-go/aws/awserr"
   "github.com/aws/aws-lambda-go/lambda"
   "github.com/aws/aws-lambda-go/events"
   "github.com/aws/aws-sdk-go/service/dynamodb"
@@ -20,13 +21,23 @@ type Response struct {
   Synonyms string `json:"synonyms:"`
 }
 
-func synonym(c context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
-  //log.Printf("Processing Lambda request %s\n", request.RequestContext.RequestID)
-  log.Printf("Processing Lambda request %s\n", request.QueryStringParameters["tag"])
-  log.Printf("Processing Lambda request %s\n", request.QueryStringParameters)
-  log.Printf("Processing Lambda request %s\n", request)
-  //tag := request.QueryStringParameters["tag"]
-  //fmt.Println(tag)dd
+func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
+  //log.Printf("Processing Lambda event %s\n", event.RequestContext.RequestID)
+  log.Printf("Processing Lambda event %s\n", event.QueryStringParameters["tag"])
+  log.Printf("Processing Lambda event %s\n", event.QueryStringParameters)
+  log.Printf("Processing Lambda event %s\n", event)
+
+  request := Request{Tag: event.QueryStringParameters["tag"]}
+  if request.Tag == "" {
+    return events.APIGatewayProxyResponse{
+      Headers: map[string]string{
+        "Content-Type": "application/json",
+      },
+      StatusCode: 400,
+      Body: "",
+      IsBase64Encoded: false,
+    }, nil
+  }
 
   ddb := dynamodb.New(session.New())
 
@@ -35,7 +46,7 @@ func synonym(c context.Context, request events.APIGatewayProxyRequest) (events.A
 
         Key: map[string]*dynamodb.AttributeValue{
             "tag": {             // キー名
-                S: aws.String("testtest"),   // 持ってくるキーの値
+                S: aws.String(request.Tag),   // 持ってくるキーの値
             },
         },
         AttributesToGet: []*string{
@@ -50,7 +61,47 @@ func synonym(c context.Context, request events.APIGatewayProxyRequest) (events.A
     resp, err := ddb.GetItem(params)
 
     if err != nil {
+      fmt.Println(err.Error())
+      return events.APIGatewayProxyResponse{
+        Headers: map[string]string{
+          "Content-Type": "application/json",
+        },
+        StatusCode: 404,
+        Body: "",
+        IsBase64Encoded: false,
+      }, err
+    }
+
+
+    log.Println(resp)
+    if len(resp.Item) == 0 {
+      log.Println("nillllll")
+    }
+    if err != nil {
+      if aerr, ok := err.(awserr.Error); ok {
+        switch aerr.Code() {
+        case dynamodb.ErrCodeProvisionedThroughputExceededException:
+          fmt.Println(dynamodb.ErrCodeProvisionedThroughputExceededException, aerr.Error())
+        case dynamodb.ErrCodeResourceNotFoundException:
+          fmt.Println(dynamodb.ErrCodeResourceNotFoundException, aerr.Error())
+        case dynamodb.ErrCodeInternalServerError:
+          fmt.Println(dynamodb.ErrCodeInternalServerError, aerr.Error())
+        default:
+          fmt.Println(aerr.Error())
+        }
+      } else {
+        // Print the error, cast err to awserr.Error to get the Code and
+        // Message from an error.
         fmt.Println(err.Error())
+      }
+      return events.APIGatewayProxyResponse{
+        Headers: map[string]string{
+          "Content-Type": "application/json",
+        },
+        StatusCode: 400,
+        Body: "error",
+        IsBase64Encoded: false,
+      }, nil
     }
 
     //resp.Item[項目名].型 でデータへのポインタを取得
