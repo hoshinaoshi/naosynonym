@@ -60,8 +60,7 @@ func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.API
 
     resp, err := ddb.GetItem(params)
 
-    if err != nil {
-      fmt.Println(err.Error())
+    if len(resp.Item) == 0 {
       return events.APIGatewayProxyResponse{
         Headers: map[string]string{
           "Content-Type": "application/json",
@@ -69,13 +68,7 @@ func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.API
         StatusCode: 404,
         Body: "",
         IsBase64Encoded: false,
-      }, err
-    }
-
-
-    log.Println(resp)
-    if len(resp.Item) == 0 {
-      log.Println("nillllll")
+      }, nil
     }
     if err != nil {
       if aerr, ok := err.(awserr.Error); ok {
@@ -98,7 +91,7 @@ func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.API
         Headers: map[string]string{
           "Content-Type": "application/json",
         },
-        StatusCode: 400,
+        StatusCode: 500,
         Body: "error",
         IsBase64Encoded: false,
       }, nil
