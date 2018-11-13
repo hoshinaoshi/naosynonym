@@ -17,7 +17,7 @@ type Request struct {
 }
 
 type Response struct {
-  Synonyms string `json:"synonyms:"`
+  Synonyms []*string `json:"synonyms:"`
 }
 
 func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
@@ -45,7 +45,7 @@ func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.API
       },
     },
     AttributesToGet: []*string{
-      aws.String("tag"),
+      aws.String("synonyms"),
     },
     ConsistentRead: aws.Bool(true),
     ReturnConsumedCapacity: aws.String("NONE"),
@@ -88,7 +88,7 @@ func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.API
     }, nil
   }
 
-  response := Response{Synonyms: *resp.Item["tag"].S}
+  response := Response{Synonyms: resp.Item["synonyms"].SS}
   responseJson, err := json.Marshal(response)
   if err != nil {
     log.Println("JSON Marshal error:", err)
