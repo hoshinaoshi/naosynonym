@@ -8,10 +8,7 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - dynamodb:GetRecords
         - dynamodb:GetItem
-        - dynamodb:GetShardIterator
-        - dynamodb:ListStreams
         - "lambda:InvokeFunction"
       Resource:
         - "arn:aws:dynamodb:us-west-2:163792334106:table/${self:provider.stage}-synonyms"
