@@ -3,6 +3,7 @@ package handler
 import (
   "testing"
   "encoding/json"
+  "github.com/aws/aws-lambda-go/events"
 )
 
 type TestStruct struct {
@@ -25,5 +26,19 @@ func TestResponseAPIGatewayProxyResponseSuccess(t *testing.T) {
   }
   if result.IsBase64Encoded {
     t.Fatal("fail IsBase64Encoded")
+  }
+}
+
+func TestSynonym(t *testing.T) {
+  queryStringParameters := make(map[string]string)
+  queryStringParameters["tag"] = "test"
+  event := events.APIGatewayProxyRequest{QueryStringParameters: queryStringParameters}
+
+  response, err := Synonym(nil, event)
+  if err != nil {
+    t.Fatal("fail")
+  }
+  if response.StatusCode != 200 {
+    t.Fatal("fail")
   }
 }
