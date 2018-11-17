@@ -26,7 +26,7 @@ func responseAPIGatewayProxyResponse(body []byte, statusCode int, err error) (ev
     Headers: map[string]string{
       "Content-Type": "application/json",
     },
-    StatusCode: 400,
+    StatusCode: statusCode,
     Body: string(body),
     IsBase64Encoded: false,
   }, err
@@ -87,6 +87,7 @@ func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.API
 
   return responseAPIGatewayProxyResponse(responseJson, 200, nil)
 }
+
 func main(){
   lambda.Start(synonym)
 }
