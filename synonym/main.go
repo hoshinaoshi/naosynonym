@@ -2,6 +2,7 @@ package main
 
 import (
   "log"
+  "fmt"
   "context"
   "encoding/json"
   "github.com/aws/aws-sdk-go/aws"
@@ -22,7 +23,6 @@ type Response struct {
 
 func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   log.Printf("Processing Lambda event %s\n", event)
-  log.Printf("Processing Lambda stage %s\n", event.RequestContext)
 
   request := Request{Tag: event.QueryStringParameters["tag"]}
   if request.Tag == "" {
@@ -39,7 +39,7 @@ func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.API
   ddb := dynamodb.New(session.New())
 
   params := &dynamodb.GetItemInput{
-    TableName: aws.String("dev-synonyms"),
+    TableName: aws.String(fmt.Sprintf("%s-synonyms", event.RequestContext.Stage)),
     Key: map[string]*dynamodb.AttributeValue{
       "tag": {
         S: aws.String(request.Tag),
