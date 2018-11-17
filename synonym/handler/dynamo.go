@@ -31,7 +31,7 @@ func ResponseAPIGatewayProxyResponse(body []byte, statusCode int, err error) (ev
   }, err
 }
 
-func Synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
+func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   eventJsonBytes, _ := json.Marshal(event)
   log.Printf("Processing Lambda event %s\n", eventJsonBytes)
 
