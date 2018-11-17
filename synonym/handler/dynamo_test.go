@@ -97,7 +97,7 @@ func setCondition() {
 func TestHandler(t *testing.T) {
   setCondition()
   queryStringParameters := make(map[string]string)
-  queryStringParameters["tag"] = "test"
+  queryStringParameters["tag"] = "testTag"
   requestContext := events.APIGatewayProxyRequestContext{Stage: "test"}
   event := events.APIGatewayProxyRequest{QueryStringParameters: queryStringParameters, RequestContext: requestContext}
 

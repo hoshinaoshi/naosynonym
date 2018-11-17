@@ -40,7 +40,14 @@ func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.API
     return ResponseAPIGatewayProxyResponse([]byte{}, 400, nil)
   }
 
-  ddb := dynamodb.New(session.New())
+  endPoint := ""
+  if event.RequestContext.Stage == "test" {
+    endPoint = "http://localhost:4569"
+  }
+  ddb := dynamodb.New(session.New(), &aws.Config{
+    Region: aws.String("us-west-2"),
+    Endpoint: aws.String(endPoint),
+  })
 
   params := &dynamodb.GetItemInput{
     TableName: aws.String(fmt.Sprintf("%s-synonyms", event.RequestContext.Stage)),
