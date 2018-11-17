@@ -21,19 +21,23 @@ type Response struct {
   Synonyms []*string `json:"synonyms:"`
 }
 
+func responseAPIGatewayProxyResponse(body []byte, statusCode int, err error) (events.APIGatewayProxyResponse, error) {
+  return events.APIGatewayProxyResponse{
+    Headers: map[string]string{
+      "Content-Type": "application/json",
+    },
+    StatusCode: 400,
+    Body: string(body),
+    IsBase64Encoded: false,
+  }, err
+}
+
 func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   log.Printf("Processing Lambda event %s\n", event)
 
   request := Request{Tag: event.QueryStringParameters["tag"]}
   if request.Tag == "" {
-    return events.APIGatewayProxyResponse{
-      Headers: map[string]string{
-        "Content-Type": "application/json",
-      },
-      StatusCode: 400,
-      Body: "",
-      IsBase64Encoded: false,
-    }, nil
+    return responseAPIGatewayProxyResponse([]byte{}, 400, nil)
   }
 
   ddb := dynamodb.New(session.New())
@@ -55,14 +59,7 @@ func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.API
   resp, err := ddb.GetItem(params)
 
   if len(resp.Item) == 0 {
-    return events.APIGatewayProxyResponse{
-      Headers: map[string]string{
-        "Content-Type": "application/json",
-      },
-      StatusCode: 404,
-      Body: "",
-      IsBase64Encoded: false,
-    }, nil
+    return responseAPIGatewayProxyResponse([]byte{}, 404, nil)
   }
   if err != nil {
     if aerr, ok := err.(awserr.Error); ok {
@@ -79,14 +76,7 @@ func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.API
     } else {
       log.Println(err.Error())
     }
-    return events.APIGatewayProxyResponse{
-      Headers: map[string]string{
-        "Content-Type": "application/json",
-      },
-      StatusCode: 500,
-      Body: "error",
-      IsBase64Encoded: false,
-    }, nil
+    return responseAPIGatewayProxyResponse([]byte{}, 500, err)
   }
 
   response := Response{Synonyms: resp.Item["synonyms"].SS}
@@ -95,14 +85,7 @@ func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.API
     log.Println("JSON Marshal error:", err)
   }
 
-  return events.APIGatewayProxyResponse{
-    Headers: map[string]string{
-      "Content-Type": "application/json",
-    },
-    StatusCode: 200,
-    Body: string(responseJson),
-    IsBase64Encoded: false,
-  }, err
+  return responseAPIGatewayProxyResponse(responseJson, 200, nil)
 }
 func main(){
   lambda.Start(synonym)
