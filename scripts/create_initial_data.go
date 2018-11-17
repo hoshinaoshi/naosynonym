@@ -46,14 +46,9 @@ func main() {
   table := db.Table("dev-synonyms")
 
   for _, row := range records {
-    go func() {
-      fmt.Printf("tag: %s, synonyms: %s", row[0], strings.Split(row[5], "/"))
-/*
-    synonym := Synonym{Tag: , Synonyms: []string{"b","c"}}
-    log.Println(synonym.Synonyms)
+    fmt.Printf("tag: %s, synonyms: %s", row[0], strings.Split(row[5], "/"))
+    synonym := Synonym{Tag: row[0], Synonyms: strings.Split(row[5], "/")}
     go table.Put(synonym).Run()
-*/
-    }()
   }
   time.Sleep(10 * time.Second)
 }
