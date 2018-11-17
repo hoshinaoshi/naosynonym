@@ -20,7 +20,7 @@ type Response struct {
   Synonyms []*string `json:"synonyms:"`
 }
 
-func synonym(c context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
+func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   log.Printf("Processing Lambda event %s\n", event)
 
   request := Request{Tag: event.QueryStringParameters["tag"]}
