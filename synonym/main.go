@@ -22,6 +22,7 @@ type Response struct {
 
 func synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   log.Printf("Processing Lambda event %s\n", event)
+  log.Printf("Processing Lambda stage %s\n", event.RequestContext)
 
   request := Request{Tag: event.QueryStringParameters["tag"]}
   if request.Tag == "" {
