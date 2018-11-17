@@ -32,7 +32,8 @@ func ResponseAPIGatewayProxyResponse(body []byte, statusCode int, err error) (ev
 }
 
 func Synonym(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
-  log.Printf("Processing Lambda event %s\n", event)
+  eventJsonBytes, _ := json.Marshal(event)
+  log.Printf("Processing Lambda event %s\n", eventJsonBytes)
 
   request := Request{Tag: event.QueryStringParameters["tag"]}
   if request.Tag == "" {
