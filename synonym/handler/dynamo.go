@@ -31,7 +31,7 @@ func ResponseAPIGatewayProxyResponse(body []byte, statusCode int, err error) (ev
   }, err
 }
 
-func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
+func GetSynonyms(ddb *dynamodb.DynamoDB, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
   eventJsonBytes, _ := json.Marshal(event)
   log.Printf("Processing Lambda event %s\n", eventJsonBytes)
 
@@ -39,15 +39,6 @@ func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.API
   if request.Tag == "" {
     return ResponseAPIGatewayProxyResponse([]byte{}, 400, nil)
   }
-
-  endPoint := ""
-  if event.RequestContext.Stage == "test" {
-    endPoint = "http://localhost:4569"
-  }
-  ddb := dynamodb.New(session.New(), &aws.Config{
-    Region: aws.String("us-west-2"),
-    Endpoint: aws.String(endPoint),
-  })
 
   params := &dynamodb.GetItemInput{
     TableName: aws.String(fmt.Sprintf("%s-synonyms", event.RequestContext.Stage)),
@@ -93,4 +84,8 @@ func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.API
   }
 
   return ResponseAPIGatewayProxyResponse(responseJson, 200, nil)
+}
+
+func Handler(_ context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
+  return GetSynonyms(dynamodb.New(session.New()), event)
 }

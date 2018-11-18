@@ -101,7 +101,11 @@ func TestHandler(t *testing.T) {
   requestContext := events.APIGatewayProxyRequestContext{Stage: "test"}
   event := events.APIGatewayProxyRequest{QueryStringParameters: queryStringParameters, RequestContext: requestContext}
 
-  response, err := Handler(nil, event)
+  ddb := dynamodb.New(session.New(), &aws.Config{
+    Region: aws.String("us-west-2"),
+    Endpoint: aws.String("http://localhost:4569"),
+  })
+  response, err := GetSynonyms(ddb, event)
   if err != nil {
     t.Fatal("fail")
   }
