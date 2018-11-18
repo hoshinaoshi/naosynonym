@@ -41,16 +41,16 @@ func TestResponseAPIGatewayProxyResponseSuccess(t *testing.T) {
 }
 
 func setCondition() {
-  sdkDB := dynamodb.New(session.New(), &aws.Config{
+  sdkClient := dynamodb.New(session.New(), &aws.Config{
     Region: aws.String("us-west-2"),
     Endpoint: aws.String("http://localhost:4569"),
   })
-  packageDB := dynamo.New(session.New(), &aws.Config{
+  pkgClient := dynamo.New(session.New(), &aws.Config{
     Region: aws.String("us-west-2"),
     Endpoint: aws.String("http://localhost:4569"),
   })
 
-  if err := packageDB.Table("test-synonyms").DeleteTable().Run(); err != nil {
+  if err := pkgClient.Table("test-synonyms").DeleteTable().Run(); err != nil {
     fmt.Println()
   }
 
@@ -74,7 +74,7 @@ func setCondition() {
     TableName: aws.String("test-synonyms"),
   }
   var err error
-  _, err = sdkDB.CreateTable(input)
+  _, err = sdkClient.CreateTable(input)
 
   if err != nil {
     fmt.Println("Got error calling CreateTable:")
@@ -84,7 +84,7 @@ func setCondition() {
   fmt.Println("Created the table test-synonyms in us-west-2")
 
 
-  table := packageDB.Table("test-synonyms")
+  table := pkgClient.Table("test-synonyms")
 
   synonym := Synonym{Tag: "testTag", Synonyms: []string{"test_tag", "test-tag"}}
   table.Put(synonym).Run()
